@@ -1,0 +1,2 @@
+include_rules
+: src/config.yaml src/chapters/*.md |> !pandoc |> dist/index.html

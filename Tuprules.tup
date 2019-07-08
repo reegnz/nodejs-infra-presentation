@@ -1,0 +1,5 @@
+PANDOC_ARGS += --standalone
+PANDOC_ARGS += --to revealjs
+PANDOC_ARGS += --slide-level=2
+
+!pandoc = |> pandoc $(PANDOC_ARGS) -o %o %f |>
