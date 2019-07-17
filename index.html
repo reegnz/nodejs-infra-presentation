@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Zoltán Reegn">
+  <meta name="dcterms.date" content="2019-07-18">
+  <title>Infra Friendly Node.JS</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="reveal.js/css/reset.css">
+  <link rel="stylesheet" href="reveal.js/css/reveal.css">
+  <style>
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <link rel="stylesheet" href="reveal.js/css/theme/black.css" id="theme">
+  <!-- Printing and PDF exports -->
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match( /print-pdf/gi ) ? 'reveal.js/css/print/pdf.css' : 'reveal.js/css/print/paper.css';
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+  <!--[if lt IE 9]>
+  <script src="reveal.js/lib/js/html5shiv.js"></script>
+  <![endif]-->
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Infra Friendly Node.JS</h1>
+  <p class="author">Zoltán Reegn</p>
+  <p class="date">18 July 2019</p>
+</section>
+
+<section><section id="about-me" class="title-slide slide level1"><h1>About me</h1><div>
+<ul>
+<li class="fragment">~13 years in IT</li>
+<li class="fragment">~8 years a professional</li>
+<li class="fragment">~7 years Java</li>
+<li class="fragment">~5 years Linux</li>
+<li class="fragment">~3 years Docker</li>
+<li class="fragment">~2 years Ansible</li>
+<li class="fragment">~2 years Kubernetes</li>
+<li class="fragment">~2 years Node.js</li>
+<li class="fragment">~1 year TypeScript</li>
+</ul>
+</div>
+<aside class="notes">
+<p>First, some words about me.</p>
+<p>I’ve been neck deep in IT for about 13 years now (including University)</p>
+<p>I’m not a wunderkind, but I’ve learned passion for my craft</p>
+<p>I’ve been making money with my knowledge for about 8 years</p>
+<p>I’ve worked with several technologies, here are some of the more relevant ones</p>
+<p>Currently I work in a position that matches the Site Reliability Engineer (SRE) description.</p>
+<p>Clearly I’m not an authority on nodejs, but node.js is not that hard to pick up, don’t kid yourselves.</p>
+</aside></section><section id="section" class="slide level2" data-background-size="contain" data-background="https://upload.wikimedia.org/wikipedia/commons/9/99/Unofficial_JavaScript_logo_2.svg" data-background-color="black">
+<h2></h2>
+<aside class="notes">
+<p>Now this is a javascript meetup, but my talk will limit itself to node.</p>
+<p>Some parts of the talk is also relevant for any kind of javascript, but when talking about infrastructure it’s usually backend services.</p>
+</aside>
+</section></section>
+<section><section id="infra-friendly" class="title-slide slide level1" data-text-align="left" data-background-size="30%" data-background-position="bottom 10% right 50%" data-background="https://nodejs.org/static/images/logos/nodejs-new-pantone-white.png"><h1>Infra Friendly</h1><aside class="notes">
+<p>What does this mean?</p>
+<p>Quick summary of what’s coming</p>
+</aside></section><section id="keep-things-secure" class="slide level2">
+<h2>Keep things secure</h2>
+<div>
+<ul>
+<li class="fragment">run npm audit</li>
+<li class="fragment">update deps</li>
+<li class="fragment">lint and test</li>
+</ul>
+</div>
+<aside class="notes">
+<p>Update your dependencies regularly. Don’t allow known flaws in other peoples code Lint and test your code, it helps eliminating the lionshare of security issues in your code.</p>
+</aside>
+</section><section id="respect-the-proxy" class="slide level2">
+<h2>Respect the Proxy</h2>
+<div>
+<ul>
+<li class="fragment">CORS</li>
+<li class="fragment">AuthN</li>
+<li class="fragment">Firewall</li>
+</ul>
+</div>
+<aside class="notes">
+<p>Don’t handle CORS in your node app. Don’t handle authentication (only) in your node app.</p>
+<p>helmet.js</p>
+</aside>
+</section><section id="respect-the-os" class="slide level2">
+<h2>Respect the OS</h2>
+<div>
+<ul>
+<li class="fragment">health checks</li>
+<li class="fragment">graceful termination</li>
+</ul>
+</div>
+<aside class="notes">
+<p>Dear process: If OS asks about your health you tell them. The OS hates it if it cannot tell if someone is healthy or not.</p>
+<p>Also if the os asks you to die, you f*ing die. Otherwise the OS will kill you.</p>
+</aside>
+</section><section id="dumb-logging" class="slide level2">
+<h2>Dumb logging</h2>
+<div>
+<ul>
+<li class="fragment">no log files</li>
+<li class="fragment">no log rotation</li>
+<li class="fragment">no timestamps</li>
+<li class="fragment">Info to stdout</li>
+<li class="fragment">Error to stderr</li>
+</ul>
+</div>
+<aside class="notes">
+<ul>
+<li>Don’t overthink logging.</li>
+<li>Don’t log to files.</li>
+<li>You don’t need to care about fancy timestamps</li>
+<li>Log info to standard output.</li>
+<li>Log error to standard error.</li>
+<li>Simple as that.</li>
+</ul>
+<p>But but but… those are important!</p>
+<p>Yes they are. Also, those are not your concern if you are developing a Node.js service.</p>
+</aside>
+</section></section>
+<section><section id="infra-friendly-node.js-is" class="title-slide slide level1"><h1>Infra friendly Node.JS is…</h1></section><section id="secure" class="slide level2 giphy-embed" data-background-color="black" data-background-iframe="https://giphy.com/embed/lo5HLcAPFSgTZNTpAn">
+<h2>Secure</h2>
+<aside class="notes">
+<p>In a nutshell this means you will not run well-known security issues in production.</p>
+</aside>
+</section><section id="npm-audit" class="slide level2" data-background-size="25%" data-background-position="top 10% left 50%" data-background-image="https://upload.wikimedia.org/wikipedia/commons/d/db/Npm-logo.svg">
+<h2>npm audit</h2>
+<div>
+<ul>
+<li class="fragment">run on PR-s</li>
+<li class="fragment">run in CI</li>
+<li class="fragment">run periodically</li>
+</ul>
+</div>
+<aside class="notes">
+<p>Keep your eye out for security flaws. Prevent known security issues entering your codebase. That means PR and CI builds should catch security issues.</p>
+<p>But running these audit scans only on changes made is not enough.</p>
+<p>Even if a codebase is not touched for months, security flaws are uncovered constantly.</p>
+<p>What you thought to be secure yesterday might have a well-known and publicly disclosed vulnerability tomorrow.</p>
+<p>So you also need to be alerted when your live system is succeptible to a security vulnerability.</p>
+</aside>
+</section><section id="npm-ci" class="slide level2" data-background-size="25%" data-background-position="top 10% left 50%" data-background-image="https://upload.wikimedia.org/wikipedia/commons/d/db/Npm-logo.svg">
+<h2>npm ci</h2>
+<div>
+<ul>
+<li class="fragment">package-lock.json</li>
+<li class="fragment">reproducible dependencies</li>
+<li class="fragment">faster resolution</li>
+</ul>
+</div>
+<aside class="notes">
+<p>Use it instead of npm install, npm install is overused. Not just in CI. It also has major advantages locally.</p>
+<p>First, it catches out-of-sync package-lock.json. If you manually edited dependencies package.json, and didn’t run npm install after, this will scream in your face.</p>
+<p>Second, it allows for reproducible builds. Yarn did this before npm, but who needs yarn when you got this in npm now.</p>
+<p>Third, it’s much faster. It doesn’t go to the npm api to ask what the newest versions are. It just looks at all the url-s in your package-lock.json and downloads all of them.</p>
+<p>This produces much faster dependency installs. Dramatically faster.</p>
+</aside>
+</section><section id="npm-outdated" class="slide level2" data-background-size="25%" data-background-position="top 10% left 50%" data-background-image="https://upload.wikimedia.org/wikipedia/commons/d/db/Npm-logo.svg">
+<h2>npm outdated</h2>
+<div>
+<ul>
+<li class="fragment">keep dependencies up-to-date</li>
+<li class="fragment">use with npm update</li>
+</ul>
+</div>
+<aside class="notes">
+<p>This one is just convenience. It gives you a single tool for checking what dependencies you need to upgrade.</p>
+<p>You can then use npm update to update the dependencies that can be updated automatically.</p>
+</aside>
+</section><section id="eslint" class="slide level2" data-background-image="https://eslint.org/assets/img/logo.svg">
+<h2>ESLint</h2>
+<div>
+<ul>
+<li class="fragment">it catches bugs</li>
+<li class="fragment">it catches soon-to-be bugs</li>
+</ul>
+</div>
+<aside class="notes">
+<p>Static analysis rocks!</p>
+<p>If you think tests are not important, or futile, at least use static analysis. It’s proven to work.</p>
+<p>It’s like riding a tricicle all the time.</p>
+<p>It’s the single best thing you can do to your project that will make your code quality skyrocket without tests.</p>
+</aside>
+</section><section id="section-1" class="slide level2" data-background-position="top 10% right 50%" data-background-size="50%" data-background-image="https://www.typescriptlang.org/assets/images/logo_nocircle.svg" data-background-color="#294E80">
+<h2></h2>
+<div>
+<ul>
+<li class="fragment">it catches bugs</li>
+<li class="fragment">it helps with complexity</li>
+<li class="fragment">more robust code</li>
+</ul>
+</div>
+<aside class="notes">
+
+</aside>
+</section></section>
+<section><section id="life-and-death" class="title-slide slide level1" data-background-video="https://media.tenor.com/videos/a628d7795028fc970939a51ec65517f5/mp4" data-background-size="contain" data-background-video-loop="true"><h1>Life and Death</h1><p>of a Linux process</p>
+<aside class="notes">
+<p>Playing nice with the OS is usually about life and death. Processes are born, and then processes either die on their own, or are asked to die by the OS.</p>
+</aside></section><section id="signals" class="slide level2" data-background-video="https://media.tenor.com/videos/db47126b5fcb7bbd92763f22958f53d9/mp4" data-background-size="contain" data-background-video-loop="true">
+<h2>Signals</h2>
+<div>
+<ul>
+<li class="fragment">SIGINT</li>
+<li class="fragment">SIGHUP</li>
+<li class="fragment">SIGTERM</li>
+<li class="fragment">SIGKILL</li>
+<li class="fragment">etc.</li>
+</ul>
+</div>
+<aside class="notes">
+<p>The OS asks things from the process with so-called signals.</p>
+<p>You can see some common signals here.</p>
+<p>The OS might ask your process to terminate. Maybe the host is shutting down, or the user asked the OS to restart the process.</p>
+<p>The OS will ask nicely first, then wait a while.</p>
+<p>This gives the process time to gracefully shut down. If this graceful shutdown doesn’t finish in time, the OS won’t ask nicely anymore.</p>
+<p>It will send a SIGKILL, and that kills the process instantly.</p>
+</aside>
+</section><section id="signal-handlers" class="slide level2">
+<h2>Signal handlers</h2>
+<div>
+<ul>
+<li class="fragment">SIGHUP, SIGINT, SIGTERM can be handled</li>
+<li class="fragment">SIGKILL cannot be handled</li>
+</ul>
+</div>
+<aside class="notes">
+<p>Processes can define handlers for signals, these are callbacks that get called when a certain signal is received.</p>
+<p>You can handle signals like SIGHUP, SIGTERM, etc.</p>
+<p>SIGKILL cannot be handled.</p>
+</aside>
+</section><section id="node.js-libraries" class="slide level2" data-background-size="25%" data-background-position="top 10% left 50%" data-background-image="https://upload.wikimedia.org/wikipedia/commons/d/db/Npm-logo.svg">
+<h2>Node.js libraries</h2>
+<ul>
+<li><a href="https://www.npmjs.com/package/@godaddy/terminus">@godaddy/terminus</a></li>
+<li><a href="https://www.npmjs.com/package/exit-hook">exit-hook</a></li>
+<li><a href="https://www.npmjs.com/package/death">death</a></li>
+</ul>
+<aside class="notes">
+<p>These three are some of the noteworthy libraries for managing signals.</p>
+<p>I recommend terminus.</p>
+</aside>
+</section></section>
+<section><section id="service-health" class="title-slide slide level1" data-background-video="https://media.tenor.com/videos/ca86f0157e75162f732c43f6adf00297/mp4" data-background-size="contain" data-background-video-loop="true"><h1>Service health</h1><aside class="notes">
+<p>The OS cannot see inside the service on how healthy it is.</p>
+<p>Therefore the service needs to be instrumented with health check endpoints that tell the outside world how it is doing.</p>
+</aside></section><section id="health-checks---why" class="slide level2">
+<h2>Health checks - why?</h2>
+<div>
+<ul>
+<li class="fragment">load-balancing</li>
+<li class="fragment">orchestrating</li>
+</ul>
+</div>
+<aside class="notes">
+<p>Health checks are usually used to determine if traffic can be routed to a service or not.</p>
+<p>It can be used to add or remove a service endpoint to/from a list of endpoints that a loadbalancer might use to route traffic.</p>
+<p>Another use-case is that a service orchestrator might kill an unhealthy service and replace it with a new instance.</p>
+</aside>
+</section><section id="health-checks---how" class="slide level2">
+<h2>Health checks - how?</h2>
+<div>
+<ul>
+<li class="fragment">Readyness</li>
+<li class="fragment">Liveness</li>
+</ul>
+</div>
+<aside class="notes">
+<p>The two use-cases are served by two kinds of checks. They usually can be served by a single endpoint though.</p>
+<p>Readyness probes give feedback to the outside world about their traffic-serving capability.</p>
+<p>It tells the world that the service is ready to receive work.</p>
+<p>Readyness probe can also indicate temporary outage that the service might recover from.</p>
+<p>Liveness probes are used to indicate whether the service needs to be restarted.</p>
+</aside>
+</section><section id="node.js-libraries-1" class="slide level2" data-background-size="25%" data-background-position="top 10% left 50%" data-background-image="https://upload.wikimedia.org/wikipedia/commons/d/db/Npm-logo.svg">
+<h2>Node.js libraries</h2>
+<ul>
+<li><a href="https://www.npmjs.com/package/@godaddy/terminus">@godaddy/terminus</a></li>
+<li><a href="https://www.npmjs.com/package/@cloudnative/health">@cloudnative/health</a></li>
+<li><a href="https://www.npmjs.com/package/@cloudnative/health-connect">@cloudnative/health-connect</a></li>
+</ul>
+<aside class="notes">
+<p>You need a library that exposes a health-check endpoint.</p>
+<p>I recommend terminus again.</p>
+</aside>
+</section></section>
+<section><section id="logs" class="title-slide slide level1"><h1>Logs</h1></section><section id="log-collection" class="slide level2">
+<h2>Log collection</h2>
+<div>
+<ul>
+<li class="fragment">EFK (Elasticsearch - Fluent bit - Kibana)</li>
+<li class="fragment">Grafana Loki + promtail</li>
+<li class="fragment">AWS CloudWatch</li>
+<li class="fragment">systemd + journald</li>
+</ul>
+</div>
+<aside class="notes">
+<p>Modern platforms all have log-collection built in.</p>
+<p>These platforms take a lot of the burden of logging from your hand and hand it to the guys operating the log collection solution.</p>
+</aside>
+</section><section id="log-files" class="slide level2">
+<h2>Log files</h2>
+<div>
+<ul>
+<li class="fragment">forget about it</li>
+<li class="fragment">use standard streams</li>
+<li class="fragment">Info to stdout</li>
+<li class="fragment">Error to stderr</li>
+</ul>
+</div>
+<aside class="notes">
+<p>Log files are a thing of the past.</p>
+<p>Modern platforms collect straight from the standard streams.</p>
+<p>But Zoli, I am not using Kubernetes or AWS or any cloud solution!</p>
+<p>Well, systemd already redirects standard streams to journald, so you should use that instead of reinventing the wheel.</p>
+</aside>
+</section><section id="log-timestamps" class="slide level2">
+<h2>Log timestamps</h2>
+<div>
+<ul>
+<li class="fragment">time zone representation issues</li>
+<li class="fragment">leave it to the collector</li>
+</ul>
+</div>
+<aside class="notes">
+<p>Now this is a more controversial one, but I stand by it.</p>
+<p>If you log, don’t log timestamps. The log-collector will apply those for you.</p>
+<p>Time zones -&gt; log collector formats the timestams to anyones local timezone.</p>
+<p>Why would you want to deal with time zones in your logger?</p>
+</aside>
+</section><section id="log-rotation" class="slide level2">
+<h2>Log rotation</h2>
+<div>
+<ul>
+<li class="fragment">just forget about it</li>
+<li class="fragment">not your problem</li>
+<li class="fragment">just enjoy life</li>
+</ul>
+</div>
+<aside class="notes">
+<p>Don’t beat up yourself about managing log files and rotating them, stressing about disk, etc.</p>
+<p>Configure the log collection system once and be done with it.</p>
+</aside>
+</section></section>
+<section><section id="http-proxies" class="title-slide slide level1"><h1>HTTP Proxies</h1></section><section id="section-2" class="slide level2" data-background-color="white" data-background-size="75%" data-background="https://www.cloudflare.com/img/learning/cdn/glossary/reverse-proxy/forward-proxy-flow.svg">
+<h2></h2>
+<aside class="notes">
+<p>Here the internet is on the egress part. Traffic goes through the proxy before reaching the internet.</p>
+</aside>
+</section><section id="section-3" class="slide level2" data-background-color="white" data-background-size="75%" data-background="https://www.cloudflare.com/img/learning/cdn/glossary/reverse-proxy/reverse-proxy-flow.svg">
+<h2></h2>
+<aside class="notes">
+<p>Here the internet is on the ingress part. Traffic coming from the internet goes through the proxy.</p>
+</aside>
+</section><section id="section-4" class="slide level2">
+<h2></h2>
+<p><a href="https://www.cloudflare.com/learning/cdn/glossary/reverse-proxy/">Cloudflare Glossary on Reverse Proxies</a></p>
+</section><section id="proxies-for-security" class="slide level2">
+<h2>Proxies for Security</h2>
+<div>
+<ul>
+<li class="fragment">TLS (HTTPS)</li>
+<li class="fragment">Authentication</li>
+<li class="fragment">Traffic Logging</li>
+<li class="fragment">CORS</li>
+<li class="fragment">Application Firewall</li>
+<li class="fragment">Policy enforcement</li>
+</ul>
+</div>
+</section><section id="proxies-for-robustness" class="slide level2">
+<h2>Proxies for Robustness</h2>
+<div>
+<ul>
+<li class="fragment">Load Balancing</li>
+<li class="fragment">Caching</li>
+<li class="fragment">Compression</li>
+<li class="fragment">Request Retries</li>
+<li class="fragment">Short-Circuiting</li>
+<li class="fragment">Canary Deployments</li>
+</ul>
+</div>
+</section><section id="node.js" class="slide level2">
+<h2>Node.js</h2>
+<aside class="notes">
+<p>Always think about your infrastructure.</p>
+<p>Is what you’re doing an orthogonal concern?</p>
+<p>Does it look like the same for every service?</p>
+<p>Then it might be a proxy use-case!</p>
+<p>No need to accumulate additional dependencies in each service.</p>
+<p>Just put it in a proxy in front of all your services.</p>
+<p>The concern shifts from all services to a group of proxies with the exact same config and lifecycle.</p>
+</aside>
+</section></section>
+<section><section id="section-5" class="title-slide slide level1" data-background-video="https://media.tenor.com/videos/b4143e974c42cc3b44372b8f8f5eeb15/mp4" data-background-size="contain" data-background-video-loop="true"><h1></h1></section><section id="section-6" class="slide level2" data-background-video="https://media.tenor.com/videos/eda4b3e151b2bf9ae13c5b893482cc4b/mp4" data-background-size="contain" data-background-video-loop="true">
+<h2></h2>
+</section><section id="qa" class="slide level2">
+<h2>Q&amp;A</h2>
+</section><section id="section-7" class="slide level2" data-background-video="https://media.tenor.com/videos/c9c57998f71d3adeca64b1d1be511c9d/mp4" data-background-size="contain" data-background-video-loop="true">
+<h2></h2>
+</section><section id="section-8" class="slide level2" data-background-video="https://media.tenor.com/videos/628e98e077f0c8b8b17fd9d61b153718/mp4" data-background-size="contain" data-background-video-loop="true">
+<h2></h2>
+</section><section id="fin" class="slide level2">
+<h2>fin</h2>
+</section></section>
+<section><section id="lifecycle-of-a-process" class="title-slide slide level1"><h1>Lifecycle of a process</h1></section><section id="service-startup" class="slide level2">
+<h2>Service startup</h2>
+<div>
+<ul>
+<li class="fragment">Instance startup</li>
+<li class="fragment">Prepared to serve requests</li>
+<li class="fragment">Load balancer recognizes instance</li>
+<li class="fragment">Load balancer routes requests to instance</li>
+</ul>
+</div>
+<aside class="notes">
+<p>OK, so this is how a service starts in a modern infra.</p>
+<p>Service instances are behind a load balancer.</p>
+<p>The load balancer will only route requests to services that are prepared to accept requests. We’ll talk about how it will know that.</p>
+<p>Once the load-balancer recognizes the instance is ready, it will start sending requests to it.</p>
+</aside>
+</section><section id="service-shutdown" class="slide level2">
+<h2>Service shutdown</h2>
+<div>
+<ul>
+<li class="fragment">Instance instructed to shut down</li>
+<li class="fragment">Instance reports it doesn’t accept requests</li>
+<li class="fragment">LoadBalancer recognizes this</li>
+<li class="fragment">Instance finishes in-progress requests</li>
+<li class="fragment">Instance closes connections</li>
+<li class="fragment">Instance exits</li>
+</ul>
+</div>
+<aside class="notes">
+<p>Now let’s examine what happens when the service needs to be shut down.</p>
+<p>This could be because of host maintenance, or scaling down to less instances, or maybe a newer version is rolled out and the old ones are shut down.</p>
+<p>This is a graceful shutdown. The OS notifies the process to please shut down.</p>
+<p>The process won’t accept any new requests, and finishes in-progress requests. It closes open connections and shuts down.</p>
+<p>The loadbalancer is also instructed not to send any more requests once the shutdown starts.</p>
+</aside>
+</section><section id="service-failure" class="slide level2">
+<h2>Service failure</h2>
+<div>
+<ul>
+<li class="fragment">Instance reports health issue</li>
+<li class="fragment">LoadBalancer recognizes this</li>
+<li class="fragment">After grace period OS asks process to shut down</li>
+<li class="fragment">Instance closes connections</li>
+<li class="fragment">Instance exits</li>
+</ul>
+</div>
+<aside class="notes">
+<p>The last example we will examine is what happens if the service itself fails either temporarily or permanently.</p>
+<p>It needs to communicate this to the outside world, so it can react to this. The LoadBalancer recognizes the health issue, and won’t route requests until the service recovers.</p>
+<p>If the service doesn’t recover, the OS will request the service to shut down, and will possibly try to start a new instance in it’s place.</p>
+</aside>
+</section><section id="health" class="slide level2">
+<h2>Health</h2>
+<ul>
+<li>Only services that are ready should receive requests</li>
+<li>Only services that are live should receie requests</li>
+<li>Services that aren’t live should be terminated</li>
+</ul>
+<aside class="notes">
+<p>Ok, so this is coming from the Kubernetes world, not going to lie about that.</p>
+<p>But the concepts are useful at other places as well, since this is a possible mechanism for improving service availability.</p>
+</aside>
+</section></section>
+<section><section id="site-reliability-engineeringsre" class="title-slide slide level1"><h1>Site Reliability Engineering<a href="#/fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></h1><aside class="notes">
+<p>Now this is an actual Job description! Easy to confuse with DevOps, except that DevOps doesn’t have a clear definition.</p>
+<p>Who knows what DevOps is? Nope, you don’t. Nobody does. Everyone has a different definition.</p>
+<p>SRE is easy to define.</p>
+</aside></section><section id="definition" class="slide level2">
+<h2>Definition</h2>
+<p>SRE is “what happens when a software engineer is tasked with what used to be called operations.”</p>
+<div class="fragment">
+<p>According to Ben Taylor, founder of Google’s SRE Team.</p>
+<aside class="notes">
+<p>See? Try giving such a simple definition to DevOps.</p>
+<p>No mumbo jumbo about developers and operations sitting down and singing kumbajah.</p>
+<p>No enterprise-y bullshit about peace between developers and system administrators.</p>
+<p>This is all-out war. Developers will automate that shit, no need for manual script-editing on the prod host.</p>
+</aside>
+</div>
+</section><section id="tools-of-the-trade" class="slide level2">
+<h2>Tools of the Trade</h2>
+<div>
+<ul>
+<li class="fragment">Terraform</li>
+<li class="fragment">Kubernetes</li>
+<li class="fragment">Golang (optional, but you’ll end up reading go code anyways)</li>
+<li class="fragment">Bash (or ZSH)</li>
+</ul>
+</div>
+<aside class="notes">
+<p>OK, so what does an SRE use in their day-to-day life?</p>
+<p>First, you have a cloud infrastructure, so automate that.</p>
+<p>Terraform is a great tool for automating cloud-provider setup.</p>
+<p>Next, you want a platform for Declarative Application Management.</p>
+<p>Kubernetes is the best solution providing that.</p>
+<p>Next, you need a language to automate all of these things in.</p>
+<p>Golang is not the best, but a tremendous ammount of know-how has been poured into go projects regarding terraform and kubernetes, so you will read a lot of go code even if you don’t automate things in go.</p>
+<p>And of course you gotta love the bash. I am more of a ZSH guy here, but either way, you need to step into the light and embrace the hacker culture.</p>
+</aside>
+</section></section>
+<section class="footnotes" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1" role="doc-endnote"><p><a href="https://landing.google.com/sre/books">Site Reliability Engineering</a><a href="#/fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+    </div>
+  </div>
+
+  <script src="reveal.js/js/reveal.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        // Push each slide change to the browser history
+        history: true,
+
+        // Optional reveal.js plugins
+        dependencies: [
+          { src: 'reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'reveal.js/plugin/zoom-js/zoom.js', async: true },
+          { src: 'reveal.js/plugin/notes/notes.js', async: true }
+        ]
+      });
+    </script>
+    </body>
+</html>
