@@ -31,6 +31,15 @@ Clearly I'm not an authority on nodejs, but node.js is not that hard to
 pick up, don't kid yourselves.
 :::
 
+## { data-background-size="contain" data-background="https://upload.wikimedia.org/wikipedia/commons/9/99/Unofficial_JavaScript_logo_2.svg" data-background-color="black"}
+
+::: notes
+Now this is a javascript meetup, but my talk will limit itself to node.
+
+Some parts of the talk is also relevant for any kind of javascript, but
+when talking about infrastructure it's usually backend services.
+:::
+
 # Infra Friendly { text-align="left" data-background-size="30%" data-background-position="bottom 10% right 50%" data-background="https://nodejs.org/static/images/logos/nodejs-new-pantone-white.png" }
 
 
