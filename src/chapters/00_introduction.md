@@ -31,9 +31,8 @@ Clearly I'm not an authority on nodejs, but node.js is not that hard to
 pick up, don't kid yourselves.
 :::
 
-# Infra Friendly
+# Infra Friendly { text-align="left" data-background-size="40%" data-background-position="bottom 10% right 50%" data-background="https://nodejs.org/static/images/logos/nodejs-new-pantone-white.png" }
 
-tl;dr
 
 :::notes
 What does this mean?
@@ -41,44 +40,69 @@ What does this mean?
 Quick summary of what's coming
 :::
 
+## Keep things secure
+
+::: incremental
+
+
+::: notes
+Update your dependencies regularly.
+Don't allow known flaws
+:::
+
+
+## Respect the Proxy
+
+::: incremental
+* CORS
+* AuthN
+* Firewall
+:::
+
+::: notes
+Don't handle CORS in your node app.
+Don't handle authentication (only) in your node app.
+
+helmet.js
+:::
+
 ## Respect the OS
 
 ::: incremental
-* OS asks about your health -> you tell them
-* OS asks you to terminate -> you finish your job and die
-* Don't let the OS go full psycho
+* health checks
+* graceful termination
 :::
 
 :::notes
+
+Dear process:
+If OS asks about your health you tell them.
 The OS hates it if it cannot tell if someone is healthy or not.
-They might be sick and still occupy resources other processes need.
 
-OS likes it if it doesn't have to kill children.
-
-OS hates it if it has to kill anybody, so first it asks them to commit suicide of their entire family.
-
-If the process doesn't commit familicide, the OS gets pissed.
-If the OS is pissed it will kill you no matter what.
+Also if the os asks you to die, you f*ing die.
+Otherwise the OS will kill you.
 :::
 
-## No duplication of functionality
+## Dumb logging
 
 ::: incremental
-* Forget about CORS
-* Forget about AuthN
-* Let the proxies do their thing
-:::
-
-## No complicated logging
-
-::: incremental
+* no log files
+* no log rotation
+* no timestamps
 * Info to stdout
 * Error to stderr
-* Forget about log files
 :::
 
 :::notes
-
+* Don't overthink logging.
+* Don't log to files.
+* You don't need to care about fancy timestamps
 * Log info to standard output.
-* Log error to standard error
+* Log error to standard error.
+* Simple as that.
+
+But but but... those are important!
+
+Yes they are.
+Also, those are not your concern if you are developing a Node.js service.
 :::
