@@ -7,7 +7,7 @@ In a nutshell this means you will not run well-known security issues
 in production.
 :::
 
-## npm audit
+## npm audit {data-background-size="25%" data-background-position="top 10% left 50%" data-background-image="https://upload.wikimedia.org/wikipedia/commons/d/db/Npm-logo.svg"}
 
 ::: incremental
 * run on PR-s
@@ -32,7 +32,7 @@ So you also need to be alerted when your live system is succeptible to a
 security vulnerability.
 :::
 
-## npm ci
+## npm ci {data-background-size="25%" data-background-position="top 10% left 50%" data-background-image="https://upload.wikimedia.org/wikipedia/commons/d/db/Npm-logo.svg"}
 
 ::: incremental
 * package-lock.json
@@ -59,7 +59,7 @@ downloads all of them.
 This produces much faster dependency installs. Dramatically faster.
 :::
 
-## npm outdated
+## npm outdated {data-background-size="25%" data-background-position="top 10% left 50%" data-background-image="https://upload.wikimedia.org/wikipedia/commons/d/db/Npm-logo.svg"}
 
 ::: incremental
 * keep dependencies up-to-date
@@ -72,4 +72,34 @@ dependencies you need to upgrade.
 
 You can then use npm update to update the dependencies that can be updated
 automatically.
+:::
+
+## ESLint {data-background-image="https://eslint.org/assets/img/logo.svg"}
+::: incremental
+* it catches bugs
+* it catches soon-to-be bugs
+:::
+
+::: notes
+Static analysis rocks!
+
+If you think tests are not important, or futile, at least use static analysis.
+It's proven to work.
+
+It's like riding a tricicle all the time.
+
+It's the single best thing you can do to your project that will make your code
+quality skyrocket without tests.
+
+:::
+
+## { data-background-position="top 10% right 50%" data-background-size="50%" data-background-image="https://www.typescriptlang.org/assets/images/logo_nocircle.svg" data-background-color="#294E80"}
+
+::: incremental
+* it catches bugs
+* it helps with complexity
+* more robust code
+:::
+
+::: notes
 :::
