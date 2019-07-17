@@ -1,4 +1,4 @@
-## Lifecycle of a process
+# Lifecycle of a process
 
 ## Service startup
 
