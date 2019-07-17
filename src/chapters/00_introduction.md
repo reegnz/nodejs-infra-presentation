@@ -31,7 +31,7 @@ Clearly I'm not an authority on nodejs, but node.js is not that hard to
 pick up, don't kid yourselves.
 :::
 
-# Infra Friendly { text-align="left" data-background-size="40%" data-background-position="bottom 10% right 50%" data-background="https://nodejs.org/static/images/logos/nodejs-new-pantone-white.png" }
+# Infra Friendly { text-align="left" data-background-size="30%" data-background-position="bottom 10% right 50%" data-background="https://nodejs.org/static/images/logos/nodejs-new-pantone-white.png" }
 
 
 :::notes
@@ -43,13 +43,17 @@ Quick summary of what's coming
 ## Keep things secure
 
 ::: incremental
-
+* run npm audit
+* update deps
+* lint and test
+:::
 
 ::: notes
 Update your dependencies regularly.
-Don't allow known flaws
+Don't allow known flaws in other peoples code
+Lint and test your code, it helps eliminating the lionshare of
+security issues in your code.
 :::
-
 
 ## Respect the Proxy
 

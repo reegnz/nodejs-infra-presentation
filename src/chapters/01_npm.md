@@ -1,6 +1,6 @@
 # Infra friendly Node.JS is...
 
-## Secure
+## Secure {data-background-color="black" data-background-iframe="https://giphy.com/embed/lo5HLcAPFSgTZNTpAn" .giphy-embed}
 
 ::: notes
 In a nutshell this means you will not run well-known security issues
